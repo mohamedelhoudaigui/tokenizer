@@ -1,17 +1,17 @@
 # Source files
-SRCS = $(wildcard ./src/*.c)
+SRCS = $(wildcard ./src/*.cpp)
 
 # Object files
-OBJS = $(patsubst ./src/%.c, ./obj/%.o, $(SRCS))
+OBJS = $(patsubst ./src/%.cpp, ./obj/%.o, $(SRCS))
 
 # Headers
 HEADERS = $(wildcard ./headers/*.h)
 
 # Compiler
-CC = cc
+CC = c++
 
 # Compiler flags
-CFLAGS = -Wall -Wextra -std=c11 -g -Ofast -fsanitize=address
+CFLAGS = -Wall -Wextra -std=c++11 -g -Ofast -fsanitize=address
 
 # Name of the static library
 NAME = Tokenizer
@@ -24,7 +24,7 @@ $(NAME): $(OBJS)
 	$(CC) $(CFLAGS) $^ -o $@
 
 # Rule to compile .c files into .o files
-./obj/%.o: ./src/%.c $(HEADERS)
+./obj/%.o: ./src/%.cpp $(HEADERS)
 	mkdir -p ./obj
 	$(CC) $(CFLAGS) -c $< -o $@
 
