@@ -1,50 +1,38 @@
-#include <set>
+#include <map>
 #include <string>
 #include <iostream>
 #include <sstream>
 
-std::set<std::string>* split_tokens(const std::string& corpus, char sep)
+#include "../headers/macros.hpp"
+
+std::map<std::string, int>* preprocess(std::string& corpus, char sep)
 {
+    for (char &c : corpus)
+        c = std::tolower(static_cast<unsigned char>(c));
+
     std::istringstream iss(corpus);
     std::string token;
-    std::set<std::string>* tokens_list = new std::set<std::string>;
+    std::map<std::string, int>* tokens_list = new std::map<std::string, int>;
 
     while (std::getline(iss, token, sep))
 	{
+        token += END_TOKEN;
         if (!token.empty())
 		{
-            tokens_list->insert(token);
+            (*tokens_list)[token] += 1;
         }
     }
     return tokens_list;
 }
 
-
-std::set<char>* get_vocab(const std::set<std::string>* tokens_list)
-{
-    std::set<char>* vocab = new std::set<char>;
-    for (const auto& token : *tokens_list)
-	{
-        for (const auto& ch : token)
-		{
-            vocab->insert(ch);
-        }
-    }
-    return vocab;
-}
-
 int main() {
     std::string corpus = "Lorem ipsum dolor sit amet consectetur adipiscing elit. Quisque faucibus ex sapien vitae pellentesque sem placerat. In id cursus mi pretium tellus duis convallis. Tempus leo eu aenean sed diam urna tempor. Pulvinar vivamus fringilla lacus nec metus bibendum egestas. Iaculis massa nisl malesuada lacinia integer nunc posuere. Ut hendrerit semper vel class aptent taciti sociosqu. Ad litora torquent per conubia nostra inceptos himenaeos.";
-    std::set<std::string>* tokens_list = split_tokens(corpus, ' ');
-    std::set<char>* vocab = get_vocab(tokens_list);
-
-
-    for (const auto& ch : *vocab) {
-        std::cout << ch << " ";
+    for (char &c : corpus)
+    {
+        c = std::tolower(static_cast<unsigned char>(c));
     }
-    std::cout << std::endl;
+    std::map<std::string, int>* pre_tokens = preprocess(corpus, ' ');
 
     delete tokens_list;
-    delete vocab;
     return 0;
 }
