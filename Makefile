@@ -1,12 +1,11 @@
 # Source files
-SRCS = $(wildcard ./src/*.cpp)
+SRCS = ./src/BPE.cpp ./src/main.cpp
 
 # Object files
 OBJS = $(patsubst ./src/%.cpp, ./obj/%.o, $(SRCS))
 
 # Headers
-HEADERS = $(wildcard ./headers/*.h)
-
+HEADERS = ./headers/BPE.hpp
 # Compiler
 CC = c++
 

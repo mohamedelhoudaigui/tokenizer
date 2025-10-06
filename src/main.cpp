@@ -3,36 +3,23 @@
 #include <iostream>
 #include <sstream>
 
-#include "../headers/macros.hpp"
-
-std::map<std::string, int>* preprocess(std::string& corpus, char sep)
-{
-    for (char &c : corpus)
-        c = std::tolower(static_cast<unsigned char>(c));
-
-    std::istringstream iss(corpus);
-    std::string token;
-    std::map<std::string, int>* tokens_list = new std::map<std::string, int>;
-
-    while (std::getline(iss, token, sep))
-	{
-        token += END_TOKEN;
-        if (!token.empty())
-		{
-            (*tokens_list)[token] += 1;
-        }
-    }
-    return tokens_list;
-}
+#include "../headers/BPE.hpp"
 
 int main() {
-    std::string corpus = "Lorem ipsum dolor sit amet consectetur adipiscing elit. Quisque faucibus ex sapien vitae pellentesque sem placerat. In id cursus mi pretium tellus duis convallis. Tempus leo eu aenean sed diam urna tempor. Pulvinar vivamus fringilla lacus nec metus bibendum egestas. Iaculis massa nisl malesuada lacinia integer nunc posuere. Ut hendrerit semper vel class aptent taciti sociosqu. Ad litora torquent per conubia nostra inceptos himenaeos.";
-    for (char &c : corpus)
-    {
-        c = std::tolower(static_cast<unsigned char>(c));
-    }
-    std::map<std::string, int>* pre_tokens = preprocess(corpus, ' ');
 
-    delete tokens_list;
+    string corpus = "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Suspendisse et libero at sem gravida sollicitudin in sed magna. Suspendisse et erat sed sapien sodales convallis id nec risus. Mauris tempus lacus at dolor pulvinar, vitae iaculis nunc pharetra. Quisque ut dui sollicitudin, luctus quam vel, volutpat ex. Maecenas pulvinar tempor erat, vitae convallis mauris. Donec suscipit, lorem ac molestie eleifend, arcu felis finibus lacus, in fermentum dui libero sed tortor. Proin egestas metus massa, blandit sollicitudin felis vestibulum a. Nam ac nunc id dolor finibus elementum sed eu quam. Maecenas vitae tellus porttitor, consectetur diam at, condimentum massa. Sed iaculis lacinia dictum. Duis lacinia posuere laoreet. Cras tempor aliquet iaculis. Phasellus sagittis mauris vel purus pharetra, id venenatis libero semper. Aliquam pellentesque tempor dolor a imperdiet.";
+
+    BPE* inst = new BPE(corpus);
+
+
+    inst->divide_corpus();
+
+    auto vocab = inst->get_vocab();
+
+    for (auto i : vocab) {
+        cout << i.first << " : " << i.second << endl;
+    }
+
+    delete inst;
     return 0;
 }
