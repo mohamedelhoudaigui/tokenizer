@@ -1,37 +1,26 @@
-# Source files
-SRCS = ./src/BPE.cpp ./src/main.cpp
+SRCS = ./BPE.cpp
 
-# Object files
-OBJS = $(patsubst ./src/%.cpp, ./obj/%.o, $(SRCS))
+OBJS = ./BPE.o
 
-# Headers
-HEADERS = ./headers/BPE.hpp
-# Compiler
+HEADERS = ./BPE.hpp
+
 CC = c++
 
-# Compiler flags
-CFLAGS = -Wall -Wextra -std=c++11 -g -O0 -fsanitize=address
+CFLAGS = -c -Wall -Wextra -Werror -g -I. -std=c++11
 
-# Name of the static library
-NAME = Tokenizer
+NAME = libbpe.a
 
-# Default target
 all: $(NAME)
 
-# Rule to create the static library
 $(NAME): $(OBJS)
-	$(CC) $(CFLAGS) $^ -o $@
+	ar -rcs $(NAME) $(OBJS)
 
-# Rule to compile .c files into .o files
-./obj/%.o: ./src/%.cpp $(HEADERS)
-	mkdir -p ./obj
-	$(CC) $(CFLAGS) -c $< -o $@
+%.o:%.cpp $(HEADERS)
+	$(CC) $(CFLAGS) $<
 
-# Clean target to remove generated files
 clean:
-	rm -rf ./obj $(NAME)
+	rm -rf *.o $(NAME)
 
 re: clean all
 
-# Phony targets
-.PHONY: all clean
+.PHONY: all lib exec both clean re test
