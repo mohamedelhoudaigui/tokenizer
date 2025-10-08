@@ -1,28 +1,32 @@
 #include "../headers/BPE.hpp" 
 
 
-BPE::BPE() {
-	cout << "No corpus is introduced !" << endl;
+BPE::BPE(): token_id(1) {
+
 }
 
-BPE::BPE(string path) {
+BPE::BPE(string path): token_id(1) {
     ifstream in(path);
 
-    if (!in) throw runtime_error("Cannot open file: " + path);
+    if (!in){
+		throw runtime_error("Cannot open file: " + path);
+	}
+
     this->corpus = string(istreambuf_iterator<char>(in), istreambuf_iterator<char>());
 }
 
+
 BPE::BPE(const BPE & other): 	corpus(other.corpus),
+								token_id(other.token_id),
 								vocab(other.vocab),
-							 	storage(other.storage) {
-	
-}
+							 	storage(other.storage) {}
 
 const BPE & BPE::operator=(const BPE & other) {
 	if (this != &other) {
 		this->corpus = other.corpus;
 		this->vocab = other.vocab;
 		this->storage = other.storage;
+		this->token_id = other.token_id;
 	}
 
 	return *this;
@@ -34,14 +38,14 @@ BPE::~BPE() {
 
 //----------------static functions--------------------
 
-bool cmp(const pair<string, int> & a, const pair<string, int> & b) 
+bool cmp(const pair<string, ll> & a, const pair<string, ll> & b) 
 { 
 	return a.second < b.second; 
 } 
 
 //---------------helper functions----------------------
 
-const unordered_map<string, int> &	BPE::get_vocab() {
+const unordered_map<string, ll> &	BPE::get_vocab() {
 	return this->vocab;
 }
 
@@ -66,12 +70,24 @@ void	BPE::print_storage() {
 	cout << "-----------------------------" << endl;
 }
 
+void	BPE::print_token_corpus() {
+	cout << "-----------------------------" << endl;
+	for (auto & vec_toke : this->tokenized_corpus) {
+		for (auto & s : vec_toke) {
+			cout << s << "-";
+		}
+		cout << endl;
+	}
+	cout << "-----------------------------" << endl;
+}
+
 //------------------main functions--------------------
 
 
 void	BPE::inject_corpus(std::string _corpus) {
 	if (!corpus.empty()) {
-		cout << "reassigning the corpus ..." << endl;
+		cerr << "corpus already assigned, create another inctance" << endl;
+		return ;
 	}
 	this->corpus = _corpus;
 }
@@ -83,59 +99,88 @@ void	BPE::divide_corpus() {
 		return;
 	}
 
-	for (auto it = corpus.begin(); it != corpus.end(); ++it) {
-		if (isalpha(*it)) {
-			this->vocab[string(1, tolower(*it))]++;
+	stringstream ss(this->corpus);
+	string		tmp;
+
+	while (getline(ss, tmp, ' ')) {
+		vector<string> t;
+		for (auto c : tmp) {
+			string s(1, c);
+			t.push_back(s);
+		}
+		tokenized_corpus.push_back(t);
+	} 
+
+	for (auto c : corpus) {
+		if (c == ' ')
+			continue ;
+		string key = string(1, c);
+		if (this->vocab[key] == 0) {
+			this->vocab[key] = this->token_id;
+			this->token_id++;
 		}
 	}
-
-	for (auto & it : this->vocab) { 
-        this->storage.push_back(it); 
-    } 
-
-    sort(this->storage.begin(), this->storage.end(), cmp); 
 
 	cout << "corpus divided successfully , you have " <<
 	this->vocab.size() <<
 	" entry's on the vocab" << endl;
-
-}
-
-int	BPE::update_pairs_value(pair<string, int>& a, pair<string, int>& b) {
-
-    int max_mergeable = min(a.second - 1, b.second - 1);
-    
-    a.second -= max_mergeable;
-    b.second -= max_mergeable;
-
-	return max_mergeable;
 }
 
 bool	BPE::merge_most_freq() {
 
-	if (vocab.size() < 2) {
-		throw new runtime_error("vocabulary size is too small");
+	map<string, ll>	pair_freq;
+	
+	for (auto & token : this->tokenized_corpus) {
+		if (token.size() < 2) {
+			continue;
+		}
+		for (size_t i = 1; i < token.size(); ++i) {
+			string s = token[i - 1] + token[i];
+			pair_freq[s]++;
+		}
 	}
 
-	auto freq1 = this->storage[this->storage.size() - 1];
-	auto freq2 = this->storage[this->storage.size() - 2];
-
-	if (freq1.second == 1 || freq2.second == 1)
+	if (pair_freq.empty())
 		return false;
 
-	string merge_key = freq1.first + freq2.first;
+	vector<pair<string, ll> > tmp2;
+	for (auto & pair : pair_freq) {
+		tmp2.push_back(pair);
+	}
 
-	int max_mergeable = update_pairs_value(freq1, freq2);
+	string best_key;
+    ll max_freq = 0;
+    for (auto & p : pair_freq) {
+        if (p.second > max_freq) {
+            max_freq = p.second;
+            best_key = p.first;
+        }
+    }
 
-	storage.erase(storage.end() - 1);
-	storage.erase(storage.end() - 1);
+    this->vocab[best_key] = this->token_id++;
 
-	pair<string, int> new_pair(merge_key, max_mergeable);
+	for (size_t i = 0; i < this->tokenized_corpus.size(); ++i) {
 
-	storage.push_back(new_pair);
-	storage.push_back(freq1);
-	storage.push_back(freq2);
+		auto & token_vec = this->tokenized_corpus[i];
+		vector<string> new_vec;
 
-	sort(storage.begin(), storage.end(), cmp);
+		size_t j = 0;
+		while (j < token_vec.size()) {
+			if (j < token_vec.size() - 1) {
+				string pair_str = token_vec[j] + token_vec[j + 1];
+	
+				if (pair_str == best_key) {
+					new_vec.push_back(best_key);
+					j += 2;
+					continue;
+				}
+			}
+			new_vec.push_back(token_vec[j]);
+			j += 1;
+		}
+
+		token_vec = new_vec;
+	}
+
 	return true;
 }

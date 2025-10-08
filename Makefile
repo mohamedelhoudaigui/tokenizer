@@ -10,7 +10,7 @@ HEADERS = ./headers/BPE.hpp
 CC = c++
 
 # Compiler flags
-CFLAGS = -Wall -Wextra -std=c++11 -g -Ofast -fsanitize=address
+CFLAGS = -Wall -Wextra -std=c++11 -g -O0 -fsanitize=address
 
 # Name of the static library
 NAME = Tokenizer

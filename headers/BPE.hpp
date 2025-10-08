@@ -1,14 +1,7 @@
 #pragma once
 
-#include <iostream>
-#include <cctype>
-#include <unordered_map>
-#include <string>
-#include <fstream>
-#include <iterator>
-#include <memory>
-#include <vector>
-#include <algorithm>
+#include <bits/stdc++.h>
+#define ll long long
 
 using namespace std;
 
@@ -21,19 +14,20 @@ class BPE {
 		BPE(const BPE & other);
 		~BPE();
 
-		void						inject_corpus(std::string _corpus);
-		void						divide_corpus(void);
-		bool						merge_most_freq();
-		int							update_pairs_value(pair<string, int>& a,
-														pair<string, int>& b) ;
+		void								inject_corpus(std::string _corpus);
+		void								divide_corpus(void);
+		bool								merge_most_freq();
 	
-		const unordered_map<string, int> &	get_vocab();
-		string						get_corpus();
-		void						print_vocab();
-		void						print_storage();
+		const unordered_map<string, ll> &	get_vocab();
+		string								get_corpus();
+		void								print_vocab();
+		void								print_storage();
+		void								print_token_corpus();
 
 	private:
-		string						corpus;
-		unordered_map<string, int>	vocab;
-		vector<pair<string, int>>	storage;
+		string								corpus;
+		vector<vector<string> >				tokenized_corpus;
+		ll									token_id;
+		unordered_map<string, ll>			vocab;
+		vector<pair<string, ll>>			storage;
 };
