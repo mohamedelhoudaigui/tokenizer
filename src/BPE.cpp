@@ -193,10 +193,11 @@ void	BPE::train()
 	cout << "starting vocab :" << endl;
 	print_vocab();
 	print_token_corpus();
-	while (merge_most_freq()) {
+	while (vocab.size() < VOCAB_SIZE) {
+		merge_most_freq();
         print_token_corpus();
     }
-	cout << "final vocab :" << endl;
+	cout << "final vocab size " << vocab.size() << " :" << endl;
     print_vocab();
 	cout << "\n--- Training Finished ---" << endl;
 }

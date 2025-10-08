@@ -5,6 +5,8 @@
 
 using namespace std;
 
+#define VOCAB_SIZE 70
+
 class BPE {
 
 	public:
