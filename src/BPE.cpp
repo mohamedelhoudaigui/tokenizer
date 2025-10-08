@@ -143,13 +143,8 @@ bool	BPE::merge_most_freq() {
 	if (pair_freq.empty())
 		return false;
 
-	vector<pair<string, ll> > tmp2;
-	for (auto & pair : pair_freq) {
-		tmp2.push_back(pair);
-	}
-
 	string best_key;
-    ll max_freq = 0;
+    ll max_freq = INT_MIN;
     for (auto & p : pair_freq) {
         if (p.second > max_freq) {
             max_freq = p.second;
@@ -157,11 +152,17 @@ bool	BPE::merge_most_freq() {
         }
     }
 
+	if (max_freq < 2)
+		return false;
+
     this->vocab[best_key] = this->token_id++;
 
 	for (size_t i = 0; i < this->tokenized_corpus.size(); ++i) {
 
 		auto & token_vec = this->tokenized_corpus[i];
+		if (token_vec.size() < 2)
+			continue;
+
 		vector<string> new_vec;
 
 		size_t j = 0;
@@ -183,4 +184,19 @@ bool	BPE::merge_most_freq() {
 	}
 
 	return true;
+}
+
+
+void	BPE::train()
+{
+	cout << "\n--- Starting BPE Training ---" << endl;
+	cout << "starting vocab :" << endl;
+	print_vocab();
+	print_token_corpus();
+	while (merge_most_freq()) {
+        print_token_corpus();
+    }
+	cout << "final vocab :" << endl;
+    print_vocab();
+	cout << "\n--- Training Finished ---" << endl;
 }

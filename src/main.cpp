@@ -15,11 +15,7 @@ int main(int argc, char *argv[]) {
     try {
         unique_ptr<BPE> inst(new BPE(argv[1]));
         inst->divide_corpus();
-        while (inst->merge_most_freq()) {
-            inst->print_token_corpus();
-        }
-        cout << "vocab :" << endl;
-        inst->print_vocab();
+        inst->train();
 
 
     } catch (const exception & e) {

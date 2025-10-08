@@ -17,6 +17,7 @@ class BPE {
 		void								inject_corpus(std::string _corpus);
 		void								divide_corpus(void);
 		bool								merge_most_freq();
+		void								train();
 	
 		const unordered_map<string, ll> &	get_vocab();
 		string								get_corpus();
