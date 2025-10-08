@@ -10,7 +10,7 @@ CFLAGS = -c -Wall -Wextra -Werror -g -I. -std=c++11
 
 NAME = libbpe.a
 
-all: $(NAME)
+all: $(NAME) clean
 
 $(NAME): $(OBJS)
 	ar -rcs $(NAME) $(OBJS)
@@ -19,7 +19,10 @@ $(NAME): $(OBJS)
 	$(CC) $(CFLAGS) $<
 
 clean:
-	rm -rf *.o $(NAME)
+	rm -f *.o
+
+fclean: clean
+	rm -f $(NAME)
 
 re: clean all
 
