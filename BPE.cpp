@@ -45,6 +45,15 @@ const unordered_map<string, ll> &	BPE::get_vocab() {
 	return this->vocab;
 }
 
+const vector<vector<string> > &		BPE::get_tokenized_corpus() {
+	return this->tokenized_corpus;
+}
+
+const string &						BPE::get_corpus() {
+	return this->corpus;
+}
+
+
 void	BPE::print_vocab() {
 	cout << "-----------------------------" << endl;
 	for (auto i : this->vocab) {

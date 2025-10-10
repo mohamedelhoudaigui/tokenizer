@@ -1,6 +1,14 @@
 #pragma once
 
-#include <bits/stdc++.h>
+#include <iostream>
+#include <unordered_map>
+#include <map>
+#include <string>
+#include <vector>
+#include <algorithm>
+#include <fstream>
+#include <sstream>
+
 #define ll long long
 
 using namespace std;
@@ -21,7 +29,8 @@ class BPE {
 		void								train(ll vocab_size);
 	
 		const unordered_map<string, ll> &	get_vocab();
-		string								get_corpus();
+		const vector<vector<string> > &		get_tokenized_corpus();
+		const string &						get_corpus();
 		void								print_vocab();
 		void								print_token_corpus();
 
