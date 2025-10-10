@@ -3,9 +3,7 @@
 //-------------canonical form----------------
 
 
-BPE::BPE(): token_id(1) {
-
-}
+BPE::BPE(): token_id(1) {}
 
 BPE::BPE(string path): token_id(1) {
 
@@ -96,7 +94,7 @@ void	BPE::divide_corpus() {
 	stringstream ss(this->corpus);
 	string		tmp;
 
-	while (getline(ss, tmp, ' ')) {
+	while (getline(ss, tmp, '\r')) {
 		vector<string> t;
 		for (auto c : tmp) {
 			string s(1, c);
