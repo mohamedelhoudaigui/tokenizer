@@ -22,8 +22,8 @@ class BPE {
 		BPE(const BPE & other);
 		~BPE();
 
-		void								inject_corpus(std::string _corpus);
-		void								divide_corpus(void);
+		void								inject_corpus(string _corpus);
+		void								divide_corpus(string sep_chars);
 		bool								merge_most_freq();
 		void								replace_freq_pair(string best_key);
 		void								train(ll vocab_size);

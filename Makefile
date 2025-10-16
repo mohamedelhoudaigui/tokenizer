@@ -29,7 +29,7 @@ clean:
 	rm -f *.o
 
 fclean: clean
-	rm -f $(NAME)
+	rm -f $(NAME) a.out
 
 re: clean all
 

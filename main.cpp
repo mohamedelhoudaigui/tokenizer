@@ -8,9 +8,10 @@ int main(int argc, char *argv[]) {
     }
 
     try {
+        string sep_chars = ":.;\n\r";
         BPE aa = BPE(argv[1]);
-        aa.divide_corpus();
-        aa.train(50);
+        aa.divide_corpus(sep_chars);
+        //aa.train(-1);
 
 
     } catch (const exception & e) {

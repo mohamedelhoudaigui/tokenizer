@@ -84,38 +84,46 @@ void	BPE::inject_corpus(std::string _corpus) {
 }
 
 
-void	BPE::divide_corpus() {
+void	BPE::divide_corpus(string sep_chars) {
 
 	if (this->corpus.empty()) {
 		cerr << "empty corpus !!" << endl;
 		return;
 	}
 
-	stringstream ss(this->corpus);
-	string		tmp;
-
-	while (getline(ss, tmp, '\r')) {
-		vector<string> t;
-		for (auto c : tmp) {
-			string s(1, c);
-			t.push_back(s);
-		}
-		tokenized_corpus.push_back(t);
-	} 
-
-	for (auto c : corpus) {
-		if (c == ' ')
-			continue ;
-		string key = string(1, c);
-		if (this->vocab[key] == 0) {
-			this->vocab[key] = this->token_id;
-			this->token_id++;
+	for (char & c : this->corpus) 
+	{
+		if (sep_chars.find(c) != string::npos) {
+			c = (char)-1;
 		}
 	}
 
-	cout << "corpus divided successfully , you have " <<
-	this->vocab.size() <<
-	" entry's on the vocab" << endl;
+	stringstream ss(this->corpus);
+	string		tmp;
+
+	while (getline(ss, tmp, (char)-1)) {
+		//vector<string> t;
+		//for (auto c : tmp) {
+		//	string s(1, c);
+		//	t.push_back(s);
+		//}
+		//tokenized_corpus.push_back(t);
+		cout << tmp << endl;
+	} 
+
+	//for (auto c : corpus) {
+	//	if (c == ' ')
+	//		continue ;
+	//	string key = string(1, c);
+	//	if (this->vocab[key] == 0) {
+	//		this->vocab[key] = this->token_id;
+	//		this->token_id++;
+	//	}
+	//}
+
+	//cout << "corpus divided successfully , you have " <<
+	//this->vocab.size() <<
+	//" entry's on the vocab" << endl;
 }
 
 bool	BPE::merge_most_freq() {
