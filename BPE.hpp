@@ -8,6 +8,7 @@
 #include <algorithm>
 #include <fstream>
 #include <sstream>
+#include <cctype>
 
 #define ll long long
 
@@ -17,13 +18,13 @@ class BPE {
 
 	public:
 		BPE();
-		BPE(string path);
+		BPE(string path, string sep_chars);
 		const BPE & operator=(const BPE & other);
 		BPE(const BPE & other);
 		~BPE();
 
 		void								inject_corpus(string _corpus);
-		void								divide_corpus(string sep_chars);
+		void								divide_corpus();
 		bool								merge_most_freq();
 		void								replace_freq_pair(string best_key);
 		void								train(ll vocab_size);
@@ -36,7 +37,8 @@ class BPE {
 
 	private:
 		string								corpus;
-		vector<vector<string> >				tokenized_corpus;
+		string								sep_chars;
 		ll									token_id;
+		vector<vector<string> >				tokenized_corpus;
 		unordered_map<string, ll>			vocab;
 };

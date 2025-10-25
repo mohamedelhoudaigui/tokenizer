@@ -3,9 +3,9 @@
 //-------------canonical form----------------
 
 
-BPE::BPE(): token_id(1) {}
+BPE::BPE(): sep_chars(":.;\n\r"), token_id(1) {}
 
-BPE::BPE(string path): token_id(1) {
+BPE::BPE(string path, string sep_chars):  sep_chars(sep_chars), token_id(1) {
 
     ifstream in(path);
 
@@ -14,10 +14,13 @@ BPE::BPE(string path): token_id(1) {
 	}
 
     this->corpus = string(istreambuf_iterator<char>(in), istreambuf_iterator<char>());
+	transform(this->corpus.begin(), this->corpus.end(), this->corpus.begin(), ::tolower);
+	this->sep_chars = ":.;\n\r";
 }
 
 
 BPE::BPE(const BPE & other): 	corpus(other.corpus),
+								sep_chars(other.sep_chars),
 								token_id(other.token_id),
 								vocab(other.vocab)
 {}
@@ -27,6 +30,7 @@ const BPE & BPE::operator=(const BPE & other) {
 		this->corpus = other.corpus;
 		this->vocab = other.vocab;
 		this->token_id = other.token_id;
+		this->sep_chars = other.sep_chars;
 	}
 
 	return *this;
@@ -84,46 +88,45 @@ void	BPE::inject_corpus(std::string _corpus) {
 }
 
 
-void	BPE::divide_corpus(string sep_chars) {
+void	BPE::divide_corpus() {
 
 	if (this->corpus.empty()) {
 		cerr << "empty corpus !!" << endl;
 		return;
 	}
 
-	for (char & c : this->corpus) 
+	for (size_t i = 0; i < this->corpus.size(); ++i) 
 	{
-		if (sep_chars.find(c) != string::npos) {
-			c = (char)-1;
+		if (this->sep_chars.find(this->corpus[i]) != string::npos) {
+			this->corpus[i] = static_cast<char>(-1);
 		}
 	}
 
 	stringstream ss(this->corpus);
 	string		tmp;
 
-	while (getline(ss, tmp, (char)-1)) {
-		//vector<string> t;
-		//for (auto c : tmp) {
-		//	string s(1, c);
-		//	t.push_back(s);
-		//}
-		//tokenized_corpus.push_back(t);
-		cout << tmp << endl;
+	while (getline(ss, tmp, static_cast<char>(-1))) {
+		vector<string> t;
+		for (auto c : tmp) {
+			string s(1, c);
+			t.push_back(s);
+		}
+		tokenized_corpus.push_back(t);
 	} 
 
-	//for (auto c : corpus) {
-	//	if (c == ' ')
-	//		continue ;
-	//	string key = string(1, c);
-	//	if (this->vocab[key] == 0) {
-	//		this->vocab[key] = this->token_id;
-	//		this->token_id++;
-	//	}
-	//}
+	for (auto c : corpus) {
+		if (c == ' ')
+			continue ;
+		string key = string(1, c);
+		if (this->vocab[key] == 0) {
+			this->vocab[key] = this->token_id;
+			this->token_id++;
+		}
+	}
 
-	//cout << "corpus divided successfully , you have " <<
-	//this->vocab.size() <<
-	//" entry's on the vocab" << endl;
+	cout << "corpus divided successfully , you have " <<
+	this->vocab.size() <<
+	" entry's on the vocab" << endl;
 }
 
 bool	BPE::merge_most_freq() {
@@ -222,6 +225,8 @@ void	BPE::train(ll vocab_size)
 			}
 		}
 	}
+
+	this->vocab.erase(string(1, static_cast<char>(-1)));
 
 	cout << "final vocab size " << vocab.size() << " :" << endl;
     print_vocab();

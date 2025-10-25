@@ -9,10 +9,10 @@ int main(int argc, char *argv[]) {
 
     try {
         string sep_chars = ":.;\n\r";
-        BPE aa = BPE(argv[1]);
-        aa.divide_corpus(sep_chars);
-        //aa.train(-1);
-
+        BPE aa = BPE(argv[1], sep_chars);
+        aa.divide_corpus();
+        aa.train(-1);
+        aa.print_vocab();
 
     } catch (const exception & e) {
         cerr << e.what() << endl;
