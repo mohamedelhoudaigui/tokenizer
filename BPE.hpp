@@ -29,8 +29,8 @@ class BPE {
 		void								replace_freq_pair(string best_key);
 		void								train(ll vocab_size);
 	
-		const unordered_map<string, ll> &	get_vocab();
-		const vector<vector<string> > &		get_tokenized_corpus();
+		unordered_map<string, ll>			get_vocab();
+		vector<vector<string> >				get_tokenized_corpus();
 		const string &						get_corpus();
 		void								print_vocab();
 		void								print_token_corpus();

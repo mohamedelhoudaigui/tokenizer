@@ -43,11 +43,11 @@ BPE::~BPE() {
 
 //---------------helper functions----------------------
 
-const unordered_map<string, ll> &	BPE::get_vocab() {
+unordered_map<string, ll> 	BPE::get_vocab() {
 	return this->vocab;
 }
 
-const vector<vector<string> > &		BPE::get_tokenized_corpus() {
+vector<vector<string> > 		BPE::get_tokenized_corpus() {
 	return this->tokenized_corpus;
 }
 
@@ -205,20 +205,13 @@ void	BPE::train(ll vocab_size)
 {
 	cout << "\n--- Starting BPE Training ---" << endl;
 
-	cout << "starting vocab :" << endl;
-	print_vocab();
-	print_token_corpus();
-
 	if (vocab_size  < 0) {
-		while (merge_most_freq()) {
-        	print_token_corpus();
-    	}
+		while (merge_most_freq()) {}
 
 	} else {
 
-		while ((long long)vocab.size() < vocab_size) {
+		while ((long long)vocab.size() <= vocab_size) {
 			bool res = merge_most_freq();
-			print_token_corpus();
 			if (!res) {
 				cout << "stopped because there is no more pairs to merge !" << endl;
 				break ;
@@ -229,6 +222,5 @@ void	BPE::train(ll vocab_size)
 	this->vocab.erase(string(1, static_cast<char>(-1)));
 
 	cout << "final vocab size " << vocab.size() << " :" << endl;
-    print_vocab();
 	cout << "\n--- Training Finished ---" << endl;
 }
